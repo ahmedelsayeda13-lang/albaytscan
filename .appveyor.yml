@@ -1,0 +1,33 @@
+# .appveyor.yml
+
+# تحديد بيئة التشغيل: Windows Server 2019 مع Python 3.8 (لضمان التوافق مع Windows 7)
+image: Visual Studio 2019
+
+# إعداد بيئة Python
+environment:
+  matrix:
+    - PYTHON: "C:\\Python38-x64"
+      PYTHON_VERSION: "3.8"
+      PYTHON_ARCH: "64"
+
+# تعطيل البناء التلقائي الافتراضي
+build: off
+
+# خطوات التثبيت والإعداد
+install:
+  # إعداد متغيرات البيئة للوصول إلى Python و pip
+  - cmd: set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+  
+  # ترقية pip وتثبيت المكتبات المطلوبة
+  - python -m pip install --upgrade pip
+  - pip install -r requirements.txt
+
+# خطوات البناء
+build_script:
+  # تشغيل PyInstaller باستخدام ملف .spec الخاص بك
+  - pyinstaller ALBAYT_SCAN.spec --clean --noconfirm
+
+# الملفات الناتجة التي سيتم رفعها (Artifacts)
+artifacts:
+  - path: dist\ALBAYT_SCAN.exe
+    name: ALBAYT_SCAN_Windows_EXE
